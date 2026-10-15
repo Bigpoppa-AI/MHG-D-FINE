@@ -1,0 +1,51 @@
+__include__: [
+  '../dfine/dfine_hgnetv2_s_custom.yml',
+  'UAVDT.yml',
+  '../base/deim.yml',
+]
+
+print_freq: 400
+output_dir: ./outputs/dfine-s-mg
+
+model: DEIM_MG
+
+DEIM_MG:
+  # yaml_path: configs/cfg/dfine-s.yaml
+  yaml_path: D:\MHG-D-FINE\configs\cfg\MHG-D-FINE.yaml
+  pretrained: weight/hgnetv2/PPHGNetV2_B0_stage1_MG.pth
+
+optimizer:
+  type: AdamW
+  params: 
+    - 
+      params: '^(?=.*backbone)(?!.*(bn|norm)).*$'
+      lr: 0.0002
+    - 
+      params: '^(?=.*(?:norm|bn)).*$'     
+      weight_decay: 0.
+
+  lr: 0.0004
+  betas: [0.9, 0.999]
+  weight_decay: 0.0001
+
+
+
+epoches: 180 
+
+
+flat_epoch: 94   
+no_aug_epoch: 12
+
+
+train_dataloader: 
+  dataset: 
+    transforms:
+      policy:
+        epoch: [4, 94, 168]  
+
+  collate_fn:
+    mixup_epochs: [4, 94]
+    stop_epoch: 168
+  total_batch_size: 12
+val_dataloader:
+  total_batch_size: 12
